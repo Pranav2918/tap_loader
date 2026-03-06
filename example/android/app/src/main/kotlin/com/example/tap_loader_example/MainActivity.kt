@@ -1,0 +1,5 @@
+package com.example.tap_loader_example
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity : FlutterActivity()
