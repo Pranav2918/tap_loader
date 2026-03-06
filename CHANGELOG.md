@@ -5,3 +5,7 @@
 * Added support for custom colors, loaders, and transitions.
 * Provided comprehensive example app.
 * Support for Android, iOS, Web, and Desktop.
+
+## 1.0.1
+
+* Fixed repository & homepage links
