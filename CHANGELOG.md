@@ -1,3 +1,8 @@
+## 1.1.1
+
+* **Removed Deprecated Values**: Updated to use `WidgetStateProperty` and `WidgetState` (replacing deprecated `MaterialState`).
+* **Color API Update**: Updated to use `withValues(alpha: ...)` instead of deprecated `withOpacity`.
+
 ## 1.1.0
 
 * **Haptic Feedback**: Added support for light impact haptic feedback on tap.
