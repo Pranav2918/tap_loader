@@ -197,7 +197,7 @@ class _TapLoaderButtonState extends State<TapLoaderButton> {
                 ? effectiveBackgroundColor
                 : (widget.disabledBackgroundColor ?? theme.disabledColor),
             foregroundColor: effectiveTextColor,
-            disabledForegroundColor: effectiveTextColor.withOpacity(0.6),
+            disabledForegroundColor: effectiveTextColor.withValues(alpha: 0.6),
             elevation: isInteractable ? widget.elevation : 0,
             padding: widget.padding,
             shape: RoundedRectangleBorder(
@@ -206,9 +206,9 @@ class _TapLoaderButtonState extends State<TapLoaderButton> {
             splashFactory: NoSplash.splashFactory,
             animationDuration: widget.animationDuration,
           ).copyWith(
-            overlayColor: MaterialStateProperty.resolveWith((states) {
-              if (states.contains(MaterialState.pressed)) {
-                return Colors.black.withOpacity(0.05);
+            overlayColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.pressed)) {
+                return Colors.black.withValues(alpha: 0.05);
               }
               return null;
             }),
