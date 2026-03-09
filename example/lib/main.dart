@@ -12,8 +12,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Tap Loader Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
       home: const MyHomePage(),
@@ -21,98 +22,143 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  bool _manualLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tap Loader Demo'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        centerTitle: true,
+        elevation: 0,
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-             // Basic usage
-              _Section(
-                title: 'Basic Usage',
-                child: TapLoaderButton(
-                  text: 'Submit',
-                  onTap: () async {
-                    await Future.delayed(const Duration(seconds: 2));
-                  },
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          children: [
+            // Standard Usage
+            _Section(
+              title: 'Standard Async Usage',
+              description: 'Wait for 2 seconds automatically',
+              child: TapLoaderButton(
+                text: 'Async Action',
+                onTap: () async {
+                  await Future.delayed(const Duration(seconds: 2));
+                },
+              ),
+            ),
+
+            // Synchronous Usage
+            _Section(
+              title: 'Synchronous Usage',
+              description: 'Works instantly without loading indicator',
+              child: TapLoaderButton(
+                text: 'Sync Action',
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Instant click!')),
+                  );
+                },
+              ),
+            ),
+
+            // Custom Styling
+            _Section(
+              title: 'Custom Styling',
+              description: 'Custom colors and border radius',
+              child: TapLoaderButton(
+                text: 'Delete Account',
+                backgroundColor: Colors.red.shade600,
+                loadingBackgroundColor: Colors.red.shade900,
+                textColor: Colors.white,
+                borderRadius: 30,
+                onTap: () async {
+                  await Future.delayed(const Duration(seconds: 2));
+                },
+              ),
+            ),
+
+            // Complex Child
+            _Section(
+              title: 'Custom Child',
+              description: 'With icon and custom layout',
+              child: TapLoaderButton(
+                backgroundColor: Colors.green.shade600,
+                onTap: () async {
+                  await Future.delayed(const Duration(seconds: 2));
+                },
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.cloud_done, color: Colors.white),
+                    SizedBox(width: 12),
+                    Text(
+                      'Deploy Now',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
+            ),
 
-              // Custom Colors
-              _Section(
-                title: 'Custom Colors',
-                child: TapLoaderButton(
-                  text: 'Save Changes',
-                  buttonColor: Colors.green,
-                  textColor: Colors.white,
-                  loaderColor: Colors.white,
-                  onTap: () async {
-                    await Future.delayed(const Duration(seconds: 2));
-                  },
-                ),
-              ),
-
-              // Custom Child with Icon
-              _Section(
-                title: 'Custom Child (Icon + Text)',
-                child: TapLoaderButton(
-                  buttonColor: Colors.blueAccent,
-                  onTap: () async {
-                    await Future.delayed(const Duration(seconds: 2));
-                  },
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.cloud_upload, color: Colors.white),
-                      SizedBox(width: 8),
-                      Text('Upload File', style: TextStyle(color: Colors.white)),
-                    ],
+            // External Control
+            _Section(
+              title: 'External Control',
+              description: 'Controlled by external state',
+              child: Column(
+                children: [
+                  TapLoaderButton(
+                    text: _manualLoading ? 'Stop Loading' : 'Start Loading',
+                    isLoading: _manualLoading,
+                    backgroundColor: Colors.orange,
+                    onTap: () {
+                      setState(() {
+                        _manualLoading = !_manualLoading;
+                      });
+                    },
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () => setState(() => _manualLoading = false),
+                    child: const Text('Reset Loader'),
+                  ),
+                ],
               ),
+            ),
 
-              // Custom Loader
-              _Section(
-                title: 'Custom Loader Widget',
-                child: TapLoaderButton(
-                  text: 'Fetching Data...',
-                  buttonColor: Colors.orange,
-                  loaderWidget: const CircularProgressIndicator(
-                    color: Colors.white,
+            // Custom Indicator
+            _Section(
+              title: 'Custom Indicator',
+              description: 'Use a different progress widget',
+              child: TapLoaderButton(
+                text: 'Synchronizing...',
+                indicatorWidget: const SizedBox(
+                  height: 18,
+                  width: 18,
+                  child: CircularProgressIndicator(
                     strokeWidth: 2,
+                    color: Colors.white,
                   ),
-                  onTap: () async {
-                    await Future.delayed(const Duration(seconds: 2));
-                  },
                 ),
+                onTap: () async {
+                  await Future.delayed(const Duration(seconds: 3));
+                },
               ),
-
-              // Full Width
-              _Section(
-                title: 'Full Width & Rounded',
-                child: TapLoaderButton(
-                  text: 'LOGIN',
-                  width: double.infinity,
-                  height: 50,
-                  borderRadius: 25,
-                  buttonColor: Colors.black,
-                  onTap: () async {
-                    await Future.delayed(const Duration(seconds: 2));
-                  },
-                ),
-              ),
-            ],
-          ),
+            ),
+            
+            const SizedBox(height: 40),
+          ],
         ),
       ),
     );
@@ -121,21 +167,46 @@ class MyHomePage extends StatelessWidget {
 
 class _Section extends StatelessWidget {
   final String title;
+  final String description;
   final Widget child;
 
-  const _Section({required this.title, required this.child});
+  const _Section({
+    required this.title,
+    required this.description,
+    required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 24.0),
+      padding: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.grey)),
-          const SizedBox(height: 8),
-          child,
-          const Divider(height: 32),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            description,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey.shade600,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Center(child: child),
         ],
       ),
     );
